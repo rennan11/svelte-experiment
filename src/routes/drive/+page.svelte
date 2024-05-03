@@ -15,7 +15,7 @@
   import { toast } from "svelte-sonner";
   import { Input } from "$lib/components/ui/input/index.js";
   import { Label } from "$lib/components/ui/label/index.js";
-  import Avatar from "$lib/components/ui/avatar/avatar.svelte";
+  import Icon from "@iconify/svelte";
 
   let unselected: () => void;
 
@@ -146,28 +146,31 @@
     <Card.Description>Navigate through your files</Card.Description>
   </Card.Header>
   <Card.Content>
-    <div class="flex justify-end mb-2 gap-2">
-      {#if selectedFiles.length > 0 || selectedFolders.length > 0}
-        <Button on:click={() => openDeleteDialogMulti()} size="sm"
-          >Delete Files/Folders</Button
+    <div class="flex mb-2 justify-between items-center">
+      <div class="flex justify-start gap-2 items-center">
+        {#if selectedFiles.length > 0 || selectedFolders.length > 0}
+          <Button on:click={() => openDeleteDialogMulti()} size="icon"
+            ><Icon icon="fa-solid:trash" /></Button
+          >
+        {/if}
+        {#if selectedFiles.length > 0}
+          <Button on:click={() => (multiDownloadOpen = true)} size="icon"
+            ><Icon icon="fa-solid:download" /></Button
+          >
+        {/if}
+      </div>
+      <div class="flex justify-end gap-2">
+        <Button on:click={() => (uploadOpen = true)} size="icon"
+          ><Icon icon="fa-solid:upload" /></Button
         >
-      {/if}
-      {#if selectedFiles.length > 0}
-        <Button on:click={() => (multiDownloadOpen = true)} size="sm"
-          >Download Files</Button
+        <Button
+          on:click={() => (unselected(), (createFolderOpen = true))}
+          size="icon"><Icon icon="fa-solid:folder-plus" /></Button
         >
-      {/if}
-      <Button on:click={() => (uploadOpen = true)} size="sm"
-        >Upload Files</Button
-      >
-      <Button on:click={() => (unselected(), refresh())} size="sm"
-        >Refresh</Button
-      >
-      <Button
-        size="sm"
-        on:click={() => (unselected(), (createFolderOpen = true))}
-        >Create Folder</Button
-      >
+        <Button on:click={() => (unselected(), refresh())} size="icon"
+          ><Icon icon="fa-solid:sync" /></Button
+        >
+      </div>
     </div>
     <DataTable
       {data}
@@ -205,7 +208,7 @@
       >
         Cancel
       </Button>
-      <Button on:click={downloadMultiFiles}>Download</Button>
+      <Button on:click={downloadMultiFiles}>Download All</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
@@ -227,7 +230,7 @@
         Cancel
       </Button>
       <Button on:click={() => (handleDelete(), (deleteOpen = false))}
-        >Download</Button
+        >Delete</Button
       >
     </Dialog.Footer>
   </Dialog.Content>
@@ -255,7 +258,7 @@
         Cancel
       </Button>
       <Button on:click={() => (handleDeleteMulti(), (multiDeleteOpen = false))}
-        >Download</Button
+        >Delete All</Button
       >
     </Dialog.Footer>
   </Dialog.Content>
