@@ -99,7 +99,7 @@ const data: Files[] = [
         lastModified: new Date().toLocaleDateString("pt-BR"),
       },
     ],
-    parentId: "1",
+    parentId: "0",
   },
   {
     id: "3",
