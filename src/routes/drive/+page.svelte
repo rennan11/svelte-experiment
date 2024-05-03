@@ -6,6 +6,7 @@
     createFolder,
     find,
     remove,
+    renameObject,
     type Files,
     type Object,
   } from "./data";
@@ -93,6 +94,8 @@
   let listDelete: Object[] = [];
   let uploadOpen = false;
   let createFolderOpen = false;
+  let renameOpen = false;
+  let toRename: Object | null = null;
 
   const downloadMultiFiles = () => {
     multiDownloadOpen = false;
@@ -108,8 +111,25 @@
   };
 
   const openDeleteDialogMulti = () => {
-    listDelete = selectedFiles.concat(selectedFolders);
+    listDelete = selectedFiles
+      .concat(selectedFolders)
+      .filter((item) => item.name !== "..");
     multiDeleteOpen = true;
+  };
+
+  const openRenameDialog = (detail: Object) => {
+    renameOpen = true;
+    toRename = detail;
+  };
+
+  const handleRename = () => {
+    const detail = toRename;
+    if (detail) {
+      renameObject(detail.type, detail.id, newName);
+      data.set(convertData(find(String(page))));
+      localData = convertData(find(String(page)));
+    }
+    newName = "";
   };
 
   const handleDelete = () => {
@@ -133,6 +153,7 @@
 
   let fileName = "";
   let folderName = "";
+  let newName = "";
 
   const refresh = () => {
     data.set(convertData(find(String(page))));
@@ -177,6 +198,7 @@
       on:folder={({ detail }) => handleFolder(detail)}
       on:selected={({ detail }) => onSelected(detail)}
       on:delete={({ detail }) => openDeleteDialog(detail)}
+      on:update={({ detail }) => openRenameDialog(detail)}
       bind:deselectedAll={unselected}
     />
   </Card.Content>
@@ -294,6 +316,7 @@
             type: "file",
           });
           refresh();
+          fileName = "";
           uploadOpen = false;
         }}>Upload</Button
       >
@@ -326,8 +349,41 @@
         on:click={() => {
           createFolder(page, folderName);
           refresh();
+          folderName = "";
           createFolderOpen = false;
         }}>Create</Button
+      >
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root bind:open={renameOpen}>
+  <Dialog.Trigger />
+  <Dialog.Content>
+    <Dialog.Header>
+      <Dialog.Title>Rename Object</Dialog.Title>
+      <Dialog.Description>
+        <div class="grid w-full max-w-sm items-center gap-1.5 mt-4">
+          <Label for="name">Name</Label>
+          <Input id="name" type="text" bind:value={newName} />
+        </div>
+      </Dialog.Description>
+    </Dialog.Header>
+    <Dialog.Footer>
+      <Button
+        variant="destructive"
+        on:click={() => {
+          renameOpen = false;
+        }}
+      >
+        Cancel
+      </Button>
+      <Button
+        on:click={() => {
+          handleRename();
+          refresh();
+          renameOpen = false;
+        }}>Rename</Button
       >
     </Dialog.Footer>
   </Dialog.Content>

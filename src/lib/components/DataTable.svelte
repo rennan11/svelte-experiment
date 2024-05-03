@@ -223,15 +223,21 @@
                       {:else}
                         <div class="h-10 w-10"></div>
                       {/if}
-                      <Button size="icon" variant="ghost">
-                        <Icon icon="fa-solid:edit" class="text-orange-500" />
-                      </Button><Button
-                        size="icon"
-                        variant="ghost"
-                        on:click={() => dispatch("delete", row.original)}
-                      >
-                        <Icon icon="fa-solid:trash" class="text-red-500" />
-                      </Button>
+                      {#if row.original.name !== ".."}
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          on:click={() => dispatch("update", row.original)}
+                        >
+                          <Icon icon="fa-solid:edit" class="text-orange-500" />
+                        </Button><Button
+                          size="icon"
+                          variant="ghost"
+                          on:click={() => dispatch("delete", row.original)}
+                        >
+                          <Icon icon="fa-solid:trash" class="text-red-500" />
+                        </Button>
+                      {/if}
                     </div>
                   </Table.Cell>
                 {:else}

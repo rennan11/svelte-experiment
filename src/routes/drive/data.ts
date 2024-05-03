@@ -186,6 +186,36 @@ export const remove = (type: "file" | "folder", id: string) => {
   }
 };
 
+export const renameObject = (
+  type: "file" | "folder",
+  id: string,
+  name: string
+) => {
+  const index = data.findIndex((item) => {
+    if (type === "file") {
+      return item.files.some((file) => file.id === id);
+    } else {
+      return item.folders.some((folder) => folder.id === id);
+    }
+  });
+
+  if (type === "file") {
+    data[index].files = data[index].files.map((file) => {
+      if (file.id === id) {
+        file.name = name;
+      }
+      return file;
+    });
+  } else {
+    data[index].folders = data[index].folders.map((folder) => {
+      if (folder.id === id) {
+        folder.name = name;
+      }
+      return folder;
+    });
+  }
+};
+
 export const createFolder = (index: number, name: string) => {
   const newId = String(id++);
   data[index].folders.push({
